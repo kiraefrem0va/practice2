@@ -1,5 +1,5 @@
 
-## Этап 1: Минимальный прототип с конфигурацией
+# Этап 1: Минимальный прототип с конфигурацией
 
 ### Общее описание
 Данный проект представляет собой прототип CLI-приложения для анализа зависимостей Python-пакетов.  
@@ -42,7 +42,7 @@
 ```bash
 python st1.py \
   --package-name requests \
-  --repository-url https://pypi.org/projects \
+  --repository-url https://pypi.org/ \
   --test-repo-mode remote \
   --package-version 2.29.0 \
   --output-file graph.png
@@ -51,7 +51,7 @@ python st1.py \
 ```bash
 python st1.py \
   --package-name requests \
-  --repository-url https://pypi.org/projects \
+  --repository-url https://pypi.org/ \
   --test-repo-mode remote \
   --package-version 2.29.0 \
   --output-file 
@@ -60,7 +60,65 @@ python st1.py \
 ```bash
 python st1.py \
   --package-name requests \
-  --repository-url https://pypi.org/projects \
+  --repository-url https://pypi.org/ \
   --test-repo-mode remote \
   --package-version 2.29.0 \
+```
+# Этап 2: Сбор данных
+
+## Общее описание
+Данный проект представляет собой CLI-приложение для анализа прямых зависимостей Python-пакетов.  
+Целью второго этапа является **извлечение информации о прямых зависимостях заданного пакета указанной версии** через официальный репозиторий PyPI.  
+
+На этом этапе приложение не строит дерево всех зависимостей и не выполняет визуализацию — оно **только получает и отображает прямые зависимости**, что является основой для последующего анализа и визуализации.
+
+---
+
+## Функции и настройки
+
+### Основные функции:
+**1. CLI-интерфейс:**  
+Программа запускается через терминал и принимает параметры конфигурации через аргументы командной строки.
+
+**2. Настраиваемые параметры:**
+- `--package-name` — имя анализируемого пакета.  
+- `--repository-url` — URL официального репозитория PyPI.  
+- `--test-repo-mode` — режим работы с репозиторием (`local` или `remote`).  
+- `--package-version` — версия пакета, для которой извлекаются зависимости.  
+- `--output-file` — имя выходного файла для скачиваемого пакета (`.tar.gz` или `.whl`).
+
+**3. Проверка корректности:**  
+Программа выполняет валидацию введённых данных:
+- проверяет корректность URL репозитория (только официальный PyPI);
+- контролирует расширение выходного файла (`.tar.gz` или `.whl`);
+- проверяет формат версии пакета (наличие цифр);
+- проверяет режим работы с репозиторием (`local` или `remote`).
+
+**4. Получение зависимостей:**  
+Программа формирует URL API PyPI в формате:
+https://pypi.org/pypi/{package_name}/{package_version}/json
+и загружает JSON с метаданными пакета.  
+
+**5. Обработка ошибок:**  
+При некорректных параметрах или проблемах с доступом к репозиторию программа выводит сообщение об ошибке и завершает работу с ненулевым кодом выхода.
+
+---
+
+## Примеры запуска
+
+**Пример для пакета `pandas` версии 2.2.2:**
+```bash
+python st2.py --package-name pandas --repository-url https://pypi.org --test-repo-mode remote --package version 2.2.2 --output-file pandas-2.2.2.whl
+```
+**Пример для пакета `flask` версии 3.0.3:**
+```bash
+python st2.py --package-name flask --repository-url https://pypi.org --test-repo-mode remote --package-version 3.0.3 --output-file flask-3.0.3.whl
+```
+**Пример для пакета `django` версии 5.1.2:**
+```bash
+python st2.py --package-name django --repository-url https://pypi.org --test-repo-mode remote --package-version 5.1.2 --output-file django-5.1.2.whl
+```
+**Пример для пакета `numPy` версии 1.26.1:**
+```bash
+python st2.py --package-name numpy --repository-url https://pypi.org --test-repo-mode remote --package-version 1.26.1 --output-file numpy-1.26.1.whl
 ```

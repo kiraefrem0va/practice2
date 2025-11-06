@@ -1,5 +1,8 @@
 import sys
+import json
+import urllib.request
 from pathlib import Path
+
 
 def parse_args():
     args = {
@@ -51,6 +54,7 @@ def parse_args():
 
     return args
 
+
 def check_repository(repo):
     if repo.startswith(("http://", "https://")):
         return
@@ -58,29 +62,57 @@ def check_repository(repo):
     if not path.exists():
         raise FileNotFoundError(f"Файл или директория '{repo}' не найдены")
 
+
 def check_package_version(version):
     if not any(c.isdigit() for c in version):
-        raise ValueError("Версия пакета должна содержать цифры (например, 1.0.0)")
+        raise ValueError("Версия пакета должна содержать цифры")
+
 
 def check_output_file(filename):
-    if not filename.endswith((".png", ".jpg", ".svg")):
-        raise ValueError("Имя выходного файла должно заканчиваться на .png/.jpg/.svg")
+    if not filename.endswith((".tar.gz", ".whl")):
+        raise ValueError("Имя выходного файла должно заканчиваться на .tar.gz или .whl")
+
+
+def get_dependencies(package_name, version, repository_url):
+    if "pypi.org" not in repository_url:
+        raise ValueError("Для этого этапа необходимо использовать официальный репозиторий PyPI.")
+
+    url = f"https://pypi.org/pypi/{package_name}/{version}/json"
+    print(f"\nИнформация из пакета:\n{url}\n")
+
+    try:
+        with urllib.request.urlopen(url) as response:
+            data = json.load(response)
+    except Exception as e:
+        raise RuntimeError(f"Не удалось получить данные с {url}: {e}")
+
+    requires = data["info"].get("requires_dist")
+    if not requires:
+        print("Прямые зависимости не указаны (пакет не требует других библиотек).")
+        return []
+
+    print("Прямые зависимости:")
+    for dep in requires:
+        print(f" - {dep}")
+    return requires
+
 
 def main():
     try:
         args = parse_args()
-
         check_repository(args["repository_url"])
         check_package_version(args["package_version"])
         check_output_file(args["output_file"])
 
+        get_dependencies(
+            args["package_name"],
+            args["package_version"],
+            args["repository_url"]
+        )
+
     except Exception as e:
         print(e, file=sys.stderr)
         sys.exit(1)
-
-    print("\nПараметры конфигурации:")
-    for key, value in args.items():
-        print(f"{key}: {value}")
 
 if __name__ == "__main__":
     main()
