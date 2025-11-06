@@ -1,4 +1,4 @@
-# Анализатор зависимостей Python-пакетов  
+
 ## Этап 1: Минимальный прототип с конфигурацией
 
 ### Общее описание
@@ -42,25 +42,25 @@
 ```bash
 python st1.py \
   --package-name requests \
-  --repository-url https://github.com/psf/requests \
+  --repository-url https://pypi.org/projects \
   --test-repo-mode remote \
-  --package-version 2.31.0 \
+  --package-version 2.29.0 \
   --output-file graph.png
 ```
 Без значения
 ```bash
 python st1.py \
   --package-name requests \
-  --repository-url https://github.com/psf/requests \
+  --repository-url https://pypi.org/projects \
   --test-repo-mode remote \
-  --package-version 2.31.0 \
+  --package-version 2.29.0 \
   --output-file 
 ```
 Без параметра
 ```bash
 python st1.py \
   --package-name requests \
-  --repository-url https://github.com/psf/requests \
+  --repository-url https://pypi.org/projects \
   --test-repo-mode remote \
-  --package-version 2.31.0 \
+  --package-version 2.29.0 \
 ```
