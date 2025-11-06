@@ -96,7 +96,7 @@ python st1.py \
 
 **4. Получение зависимостей:**  
 Программа формирует URL API PyPI в формате:
-https://pypi.org/pypi/{package_name}/{package_version}/json
+https://pypi.org/{package_name}/{package_version}/json
 и загружает JSON с метаданными пакета.  
 
 **5. Обработка ошибок:**  
