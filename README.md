@@ -122,3 +122,102 @@ python st2.py --package-name django --repository-url https://pypi.org --test-rep
 ```bash
 python st2.py --package-name numpy --repository-url https://pypi.org --test-repo-mode remote --package-version 1.26.1 --output-file numpy-1.26.1.whl
 ```
+
+# Этап 3: Основные операции
+
+## Общее описание
+Данный проект представляет собой CLI-приложение для анализа **графа зависимостей Python-пакетов**.  
+Цель этапа 3 — построение графа зависимостей с учётом **транзитивности**, обработка **циклов** и поддержка **тестового локального репозитория**.  
+
+Особенности:
+- DFS без рекурсии для поиска всех зависимостей  
+- Корректная обработка циклов  
+- Возможность работы как с реальными пакетами PyPI (`remote`), так и с локальными тестовыми файлами (`local`)  
+
+---
+
+## Аргументы CLI
+
+- `--package-name` — имя анализируемого пакета  
+- `--repository-url` — URL PyPI или путь к локальному файлу с графом  
+- `--test-repo-mode` — `local` или `remote`  
+- `--package-version` — версия пакета (для remote)  
+- `--output-file` — имя выходного файла (`.whl` или `.tar.gz`)
+
+---
+
+## Принцип работы
+
+1. **Загрузка графа зависимостей**:
+   - `remote`: получает JSON с PyPI и извлекает прямые зависимости  
+
+   - `local`: читает файл формата:
+     ```
+     A: B C
+     B: D
+     C: D E
+     D:
+     E:
+     ```
+      первая колонка — пакет, после двоеточия — его прямые зависимости
+
+2. **DFS без рекурсии**:
+   - Используется стек и множество `visited`, чтобы обходить граф без рекурсий  
+   - Множество `result` хранит все транзитивные зависимости  
+   - Циклы безопасно обрабатываются (не застреваем в бесконечном цикле)
+
+---
+
+## Локальные тестовые файлы
+
+#### 1. `test1.txt` — простой граф
+```
+A: B C
+B: D
+C: D E
+D:
+E:
+```
+### Запуск
+```bash
+python st3.py --package-name A --repository-url test1.txt --test-repo-mode local --package-version 1.0.0 --output-file test1.whl
+```
+#### 2. `test2.txt` — граф с циклом
+```
+X: Y Z
+Y: Z X
+Z: W
+W:
+```
+### Запуск
+```bash
+python st3.py --package-name X --repository-url test2.txt --test-repo-mode local --package-version 1.0.0 --output-file test2.whl
+```
+
+#### 3. `test3.txt` — сложный граф с несколькими циклами
+```
+P: Q R
+Q: R S
+R: P T
+S: T
+T:
+```
+### Запуск
+```bash
+python st3.py --package-name P --repository-url test3.txt --test-repo-mode local --package-version 1.0.0 --output-file test3.whl
+```
+
+## Примеры удаленного запуска
+### 1
+```bash
+python st3.py --package-name flask --repository-url https://pypi.org --test-repo-mode remote --package-version 3.0.3 --output-file flask-3.0.3.whl
+```
+
+### 2
+```bash
+python st3.py --package-name pandas --repository-url https://pypi.org --test-repo-mode remote --package-version 2.2.2 --output-file pandas-2.2.2.whl
+```
+### 3
+```bash
+python st3.py --package-name fastapi --repository-url https://pypi.org --test-repo-mode remote --package-version 0.115.0 --output-file fastapi-0.115.0.whl
+```

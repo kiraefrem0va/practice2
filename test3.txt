@@ -1,0 +1,5 @@
+P: Q R
+Q: R S
+R: P T
+S: T
+T:
