@@ -41,7 +41,7 @@
 Без ошибок
 ```bash
 python st1.py \
-  --package-name requests \
+  --package-name numpy \
   --repository-url https://pypi.org/ \
   --test-repo-mode remote \
   --package-version 2.29.0 \
@@ -50,7 +50,7 @@ python st1.py \
 Без значения
 ```bash
 python st1.py \
-  --package-name requests \
+  --package-name numpy \
   --repository-url https://pypi.org/ \
   --test-repo-mode remote \
   --package-version 2.29.0 \
@@ -59,7 +59,7 @@ python st1.py \
 Без параметра
 ```bash
 python st1.py \
-  --package-name requests \
+  --package-name numpy \
   --repository-url https://pypi.org/ \
   --test-repo-mode remote \
   --package-version 2.29.0 \
