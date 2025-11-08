@@ -40,7 +40,8 @@
 ---
 
 **Запуск**
-Без ошибок
+
+*Без ошибок*
 ```bash
 python st1.py \
   --package-name numpy \
@@ -49,7 +50,11 @@ python st1.py \
   --package-version 2.29.0 \
   --output-file graph.png
 ```
-Без значения
+**Вывод**
+
+![alt text](screenshots/1.png)
+
+*Без значения*
 ```bash
 python st1.py \
   --package-name numpy \
@@ -58,7 +63,10 @@ python st1.py \
   --package-version 2.29.0 \
   --output-file 
 ```
-Без параметра
+**Вывод**
+
+![alt text](screenshots/2.png)
+*Без параметра*
 ```bash
 python st1.py \
   --package-name numpy \
@@ -66,6 +74,10 @@ python st1.py \
   --test-repo-mode remote \
   --package-version 2.29.0 \
 ```
+**Вывод**
+
+![alt text](screenshots/3.png)
+
 # Этап 2: Сбор данных
 
 ## Общее описание
@@ -110,21 +122,33 @@ https://pypi.org/{package_name}/{package_version}/json
 
 **Пример для пакета `pandas` версии 2.2.2:**
 ```bash
-python st2.py --package-name pandas --repository-url https://pypi.org --test-repo-mode remote --package version 2.2.2 --output-file pandas-2.2.2.whl
+python st2.py --package-name pandas --repository-url https://pypi.org --test-repo-mode remote --package-version 2.2.2 --output-file pandas-2.2.2.whl
 ```
+**Вывод**
+
+![alt text](screenshots/4.png)
+
 **Пример для пакета `flask` версии 3.0.3:**
 ```bash
 python st2.py --package-name flask --repository-url https://pypi.org --test-repo-mode remote --package-version 3.0.3 --output-file flask-3.0.3.whl
 ```
+**Вывод**
+
+![alt text](screenshots/5.png)
 **Пример для пакета `django` версии 5.1.2:**
 ```bash
 python st2.py --package-name django --repository-url https://pypi.org --test-repo-mode remote --package-version 5.1.2 --output-file django-5.1.2.whl
 ```
+**Вывод**
+
+![alt text](screenshots/6.png)
 **Пример для пакета `numPy` версии 1.26.1:**
 ```bash
 python st2.py --package-name numpy --repository-url https://pypi.org --test-repo-mode remote --package-version 1.26.1 --output-file numpy-1.26.1.whl
 ```
+**Вывод**
 
+![alt text](screenshots/7.png)
 # Этап 3: Основные операции
 
 ## Общее описание
@@ -184,6 +208,9 @@ E:
 ```bash
 python st3.py --package-name A --repository-url test1.txt --test-repo-mode local --package-version 1.0.0 --output-file test1.whl
 ```
+**Вывод**
+
+![alt text](screenshots/8.png)
 #### 2. `test2.txt` — граф с циклом
 ```
 X: Y Z
@@ -195,7 +222,9 @@ W:
 ```bash
 python st3.py --package-name X --repository-url test2.txt --test-repo-mode local --package-version 1.0.0 --output-file test2.whl
 ```
+**Вывод**
 
+![alt text](screenshots/9.png)
 #### 3. `test3.txt` — сложный граф с несколькими циклами
 ```
 P: Q R
@@ -208,18 +237,121 @@ T:
 ```bash
 python st3.py --package-name P --repository-url test3.txt --test-repo-mode local --package-version 1.0.0 --output-file test3.whl
 ```
+**Вывод**
 
+![alt text](screenshots/10.png)
 ## Примеры удаленного запуска
 ### 1
 ```bash
 python st3.py --package-name flask --repository-url https://pypi.org --test-repo-mode remote --package-version 3.0.3 --output-file flask-3.0.3.whl
 ```
+**Вывод**
 
+![alt text](screenshots/11.png)
 ### 2
 ```bash
 python st3.py --package-name pandas --repository-url https://pypi.org --test-repo-mode remote --package-version 2.2.2 --output-file pandas-2.2.2.whl
 ```
+**Вывод**
+
+![alt text](screenshots/12.png)
 ### 3
 ```bash
 python st3.py --package-name fastapi --repository-url https://pypi.org --test-repo-mode remote --package-version 0.115.0 --output-file fastapi-0.115.0.whl
 ```
+**Вывод**
+
+![alt text](screenshots/13.png)
+# Этап 4: Дополнительные операции
+
+### Общее описание
+На этом этапе в CLI-приложении добавлена поддержка **режима вывода обратных зависимостей**.  
+Обратные зависимости — это пакеты, **которые зависят от указанного пакета**.  
+Например, если `A` зависит от `B`, то `B` имеет обратную зависимость — `A`.
+
+Целью этапа является расширение функциональности программы, реализованной ранее, без изменения структуры данных или логики анализа.
+
+---
+
+### Новые возможности
+
+#### **1. Поддержка обратных зависимостей**
+Добавлен новый булевый параметр командной строки:`--reverse-mode` 
+
+Если этот флаг активен, программа:
+- строит обратный граф зависимостей (инвертирует связи);
+-	применяет тот же алгоритм обхода в глубину (DFS) без рекурсии, что и в Этапе 3;
+-	выводит все пакеты, которые зависят от указанного (прямо или транзитивно).
+
+От параметра зависит какой будет вывод, прямая зависимость или обратная
+#### **2. Использование существующих тестовых графов**
+Для проверки работы обратных зависимостей можно использовать те же локальные тестовые файлы, созданные на Этапе 3.
+Это обеспечивает единообразие и позволяет легко проверить корректность обоих режимов работы.
+### Запуск для нахождения в обратной зависимости
+```bash
+python st4.py --package-name D --repository-url test1.txt --test-repo-mode local --package-version 1.0.0 --output-file dummy.whl --reverse-mode true
+```
+**Вывод**
+
+![alt text](screenshots/14.png)
+
+# Этап 5: Визуализация графа зависимостей
+
+### Общее описание
+На заключительном этапе проекта добавлена **визуализация графа зависимостей** Python-пакетов.  
+Теперь пользователь может видеть граф зависимостей в наглядном виде с помощью **Mermaid** и сохранять изображение в формате **SVG**.
+
+Проект продолжает работу предыдущих этапов: загрузка графа, транзитивные зависимости, обратные зависимости.
+
+---
+
+### Новые возможности
+
+#### 1. Генерация графа Mermaid
+- Используется словарь зависимостей `graph = {package: [deps]}`.
+- Для каждого пакета и его зависимостей формируется текст в формате:
+```mermaid
+graph TD
+  A --> B
+  A --> C
+  B --> D
+```
+- Функция generate_mermaid(graph) создаёт этот текст
+#### 2. Сохранение файлов
+- .mmd — текстовое представление графа.
+-	.svg — визуализация графа (через Mermaid CLI mmdc).
+-	Файлы сохраняются с именем, указанным в --output-file.
+
+#### 3. Новый параметр
+-	Булевая функция --visualize — генерация .mmd и .svg.
+#### 4. Тестовый запуск
+```bash
+python st5.py --package-name D --repository-url test1.txt --test-repo-mode local --package-version 1.0.0 --output-file graph.svg --reverse-mode true --visualize true 
+```
+**Вывод**
+
+![alt text](screenshots/15.png)
+
+*А также создание файлов:*
+![alt text](screenshots/16.png)
+**Содержимое файла graph.mmd:**
+```mermaid
+graph TD
+  A --> B
+  A --> C
+  B --> D
+  C --> D
+  C --> E
+```
+**Содержимое файла graph.svg:**
+
+![alt text](graph.svg)
+
+# Общий вывод по работе
+В рамках проекта было разработано CLI-приложение для анализа зависимостей Python-пакетов. На начальном этапе был создан базовый прототип, который принимал параметры пакета через командную строку и проверял их на корректность.
+
+Затем была реализована логика работы с графом зависимостей. Программа извлекает прямые и транзитивные зависимости, правильно обрабатывает циклические зависимости и поддерживает обратные связи для заданного пакета.
+
+На завершающем этапе была добавлена визуализация графа с использованием Mermaid и возможность сохранения изображения в формате SVG. Приложение предоставляет возможность наглядного анализа зависимостей, сравнения результатов с штатными инструментами и объяснения возможных расхождений.
+
+В итоге было создано функциональное, наглядное и удобное средство для анализа зависимостей Python-пакетов, не требующее использования сторонних менеджеров.
