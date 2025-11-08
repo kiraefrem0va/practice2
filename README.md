@@ -295,7 +295,7 @@ python st4.py --package-name D --repository-url test1.txt --test-repo-mode local
 
 ![alt text](screenshots/14.png)
 
-# Этап 5: Визуализация графа зависимостей
+# Этап 5: Визуализация
 
 ### Общее описание
 На заключительном этапе проекта добавлена **визуализация графа зависимостей** Python-пакетов.  
