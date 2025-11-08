@@ -80,12 +80,6 @@ def check_output_file(filename):
         raise ValueError("Имя выходного файла должно заканчиваться на .tar.gz или .whl")
 
 def load_local_graph(path):
-    """
-    Формат локального файла (строка за строкой):
-    A: B C
-    B: C D
-    C:
-    """
     graph = {}
     with open(path, "r", encoding="utf-8") as f:
         for line in f:
